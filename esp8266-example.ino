@@ -30,11 +30,13 @@ void log_msg(String msg)
   Serial.println(tm);
 }
 
+// To hold part of the MAC address
+char macstr[7];
+
 void setup()
 {
   // Let's create the channel names based on the MAC address
   unsigned char mac[6];
-  char macstr[7];
   WiFi.macAddress(mac);
   sprintf(macstr, "%02X%02X%02X", mac[3], mac[4], mac[5]);
   sprintf(mqttChannel, "%s/%s/test", _mqttBase, macstr);
@@ -90,7 +92,7 @@ void loop()
     log_msg("Connecting to MQTT Server " + String(mqttServer));
 
     // Generate a random ID each time
-    String clientId = "ESP8266Client-bme820-";
+    String clientId = "ESP8266Client-" + String(macstr) + "-";
     clientId += String(random(0xffff), HEX);
 
     if (client.connect(clientId.c_str())) {
